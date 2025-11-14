@@ -1,0 +1,46 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Book {
+  id                Int       @id @default(autoincrement())
+  title             String
+  author            String
+  isbn              String    @unique
+  publishedYear     Int
+  availabilityStatus String   @default("Available") // Available, Borrowed
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime? // Soft delete
+
+  wishlists         Wishlist[]
+
+  @@index([author])
+  @@index([publishedYear])
+  @@index([availabilityStatus])
+  @@index([deletedAt])
+  @@map("books")
+}
+
+model Wishlist {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  bookId    Int
+  createdAt DateTime @default(now())
+
+  book      Book     @relation(fields: [bookId], references: [id])
+
+  @@unique([userId, bookId])
+  @@index([bookId])
+  @@index([userId])
+  @@map("wishlists")
+}
+
