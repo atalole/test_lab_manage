@@ -6,7 +6,8 @@ const options: swaggerJsdoc.Options = {
     info: {
       title: 'Library Management System API',
       version: '1.0.0',
-      description: 'A robust and scalable backend API for managing a library\'s book inventory with asynchronous wishlist notifications',
+      description:
+        "A robust and scalable backend API for managing a library's book inventory with asynchronous wishlist notifications",
       contact: {
         name: 'API Support',
       },
@@ -28,7 +29,16 @@ const options: swaggerJsdoc.Options = {
       schemas: {
         Book: {
           type: 'object',
-          required: ['id', 'title', 'author', 'isbn', 'publishedYear', 'availabilityStatus', 'createdAt', 'updatedAt'],
+          required: [
+            'id',
+            'title',
+            'author',
+            'isbn',
+            'publishedYear',
+            'availabilityStatus',
+            'createdAt',
+            'updatedAt',
+          ],
           properties: {
             id: {
               type: 'integer',
@@ -268,4 +278,3 @@ const options: swaggerJsdoc.Options = {
 const swaggerSpec = swaggerJsdoc(options);
 
 export default swaggerSpec;
-

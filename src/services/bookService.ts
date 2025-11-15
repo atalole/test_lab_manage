@@ -44,7 +44,7 @@ export class BookService {
   static async getBooks(params: BookQueryParams): Promise<GetBooksResult> {
     const { page = 1, limit = 10, author, publishedYear } = params;
     const skip = (page - 1) * limit;
-    
+
     const where: {
       deletedAt: null;
       author?: { contains: string; mode: 'insensitive' };
@@ -104,7 +104,7 @@ export class BookService {
   // Update book details
   static async updateBook(id: string | number, data: BookUpdateInput): Promise<Book> {
     const bookId = typeof id === 'string' ? parseInt(id, 10) : id;
-    
+
     // Check if book exists and is not deleted
     const existingBook = await prisma.book.findFirst({
       where: {
@@ -124,7 +124,10 @@ export class BookService {
       });
 
       if (duplicateBook) {
-        throw new AppError(BOOK_ERRORS.DUPLICATE_ISBN.message, BOOK_ERRORS.DUPLICATE_ISBN.statusCode);
+        throw new AppError(
+          BOOK_ERRORS.DUPLICATE_ISBN.message,
+          BOOK_ERRORS.DUPLICATE_ISBN.statusCode,
+        );
       }
     }
 
@@ -151,7 +154,7 @@ export class BookService {
         },
         {
           priority: 1,
-        }
+        },
       );
     }
 
@@ -227,4 +230,3 @@ export class BookService {
     };
   }
 }
-

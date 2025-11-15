@@ -5,6 +5,7 @@ This project includes comprehensive Swagger/OpenAPI 3.0 documentation for all AP
 ## Accessing the Documentation
 
 ### Swagger UI (Interactive)
+
 - **URL**: `http://localhost:3000/api-docs`
 - **Features**:
   - Interactive API testing
@@ -13,6 +14,7 @@ This project includes comprehensive Swagger/OpenAPI 3.0 documentation for all AP
   - Try-it-out functionality
 
 ### OpenAPI JSON Specification
+
 - **URL**: `http://localhost:3000/api-docs.json`
 - **Use Cases**:
   - Import into API testing tools (Postman, Insomnia)
@@ -45,9 +47,11 @@ All data models are defined in the Swagger configuration:
 ## Configuration
 
 ### Swagger Configuration File
+
 Located at: `src/config/swagger.ts`
 
 Key features:
+
 - OpenAPI 3.0 specification
 - Comprehensive schema definitions
 - Request/response examples
@@ -84,13 +88,18 @@ router.get('/endpoint', handler);
 The Swagger UI is configured in `src/server.ts`:
 
 ```typescript
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'Library Management System API Documentation',
-}));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Library Management System API Documentation',
+  }),
+);
 ```
 
 You can customize:
+
 - CSS styling
 - Site title
 - Swagger UI options
@@ -107,15 +116,19 @@ You can customize:
 ## Integration with Tools
 
 ### Postman
+
 1. Import from: `http://localhost:3000/api-docs.json`
 2. Use Postman's OpenAPI import feature
 
 ### Insomnia
+
 1. Import from: `http://localhost:3000/api-docs.json`
 2. Use Insomnia's OpenAPI import feature
 
 ### Code Generation
+
 Use tools like:
+
 - `openapi-generator` - Generate client SDKs
 - `swagger-codegen` - Generate server stubs
 - `redoc` - Generate beautiful documentation
@@ -123,16 +136,19 @@ Use tools like:
 ## Troubleshooting
 
 ### Documentation Not Loading
+
 - Ensure server is running
 - Check that `/api-docs` route is accessible
 - Verify Swagger configuration is correct
 
 ### Missing Endpoints
+
 - Check that JSDoc comments are properly formatted
 - Verify file paths in `swagger.ts` `apis` array
 - Ensure route files are included in the scan
 
 ### Schema Errors
+
 - Validate OpenAPI spec at: https://editor.swagger.io/
 - Check for syntax errors in JSDoc comments
 - Verify schema references are correct
@@ -143,4 +159,3 @@ Use tools like:
 2. **Rate Limiting**: Apply rate limiting to documentation endpoints
 3. **Caching**: Cache the OpenAPI JSON for better performance
 4. **Versioning**: Update API version in Swagger config when releasing new versions
-

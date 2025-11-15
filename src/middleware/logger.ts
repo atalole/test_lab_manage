@@ -5,11 +5,7 @@ import logger from '../config/logger.ts';
  * Request logging middleware
  * Logs all HTTP requests with method, URL, status code, and response time
  */
-export const requestLogger = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
+export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
   const start = Date.now();
 
   // Log request
@@ -40,11 +36,7 @@ export const requestLogger = (
  * Error logging middleware
  * Logs errors with full context
  */
-export const errorLogger = (
-  err: Error,
-  req: Request,
-  next: NextFunction
-): void => {
+export const errorLogger = (err: Error, req: Request, next: NextFunction): void => {
   logger.error('Request error', {
     error: err.message,
     stack: err.stack,
@@ -58,4 +50,3 @@ export const errorLogger = (
 
   next(err);
 };
-

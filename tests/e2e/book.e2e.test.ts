@@ -26,7 +26,7 @@ describe('E2E - Books API', () => {
           success: true,
           message: 'Server is running',
           timestamp: expect.any(String),
-        })
+        }),
       );
     });
   });
@@ -60,7 +60,7 @@ describe('E2E - Books API', () => {
           success: true,
           data: expect.any(Array),
           pagination: expect.any(Object),
-        })
+        }),
       );
     });
 
@@ -72,7 +72,7 @@ describe('E2E - Books API', () => {
         expect.objectContaining({
           success: false,
           message: 'Validation failed',
-        })
+        }),
       );
     });
   });
@@ -93,45 +93,39 @@ describe('E2E - Books API', () => {
 
       (BookService.createBook as jest.Mock).mockResolvedValue(newBook);
 
-      const res = await request(app)
-        .post('/api/books')
-        .send({
-          title: 'New Book',
-          author: 'New Author',
-          isbn: '9780743273565',
-          publishedYear: 2023,
-        });
+      const res = await request(app).post('/api/books').send({
+        title: 'New Book',
+        author: 'New Author',
+        isbn: '9780743273565',
+        publishedYear: 2023,
+      });
 
       expect(res.status).toBe(201);
       expect(res.body).toEqual(
         expect.objectContaining({
           success: true,
           message: 'Book created successfully',
-        })
+        }),
       );
     });
 
     it('should return 400 for invalid ISBN format', async () => {
-      const res = await request(app)
-        .post('/api/books')
-        .send({
-          title: 'Book',
-          author: 'Author',
-          isbn: 'invalid-isbn',
-          publishedYear: 2023,
-        });
+      const res = await request(app).post('/api/books').send({
+        title: 'Book',
+        author: 'Author',
+        isbn: 'invalid-isbn',
+        publishedYear: 2023,
+      });
 
       expect(res.status).toBe(400);
       expect(res.body.success).toBe(false);
     });
 
     it('should return 400 when required fields are missing', async () => {
-      const res = await request(app)
-        .post('/api/books')
-        .send({
-          title: 'Book',
-          author: 'Author',
-        });
+      const res = await request(app).post('/api/books').send({
+        title: 'Book',
+        author: 'Author',
+      });
 
       expect(res.status).toBe(400);
     });
@@ -141,14 +135,12 @@ describe('E2E - Books API', () => {
 
       (BookService.createBook as jest.Mock).mockRejectedValue(error);
 
-      const res = await request(app)
-        .post('/api/books')
-        .send({
-          title: 'Duplicate Book',
-          author: 'Author',
-          isbn: '9780743273565',
-          publishedYear: 2023,
-        });
+      const res = await request(app).post('/api/books').send({
+        title: 'Duplicate Book',
+        author: 'Author',
+        isbn: '9780743273565',
+        publishedYear: 2023,
+      });
 
       expect(res.status).toBe(409);
     });
@@ -181,7 +173,7 @@ describe('E2E - Books API', () => {
             title: 'Test Book',
             isbn: '1234567890',
           }),
-        })
+        }),
       );
     });
 
@@ -212,16 +204,14 @@ describe('E2E - Books API', () => {
 
       (BookService.updateBook as jest.Mock).mockResolvedValue(updatedBook);
 
-      const res = await request(app)
-        .put('/api/books/1')
-        .send({ title: 'Updated Title' });
+      const res = await request(app).put('/api/books/1').send({ title: 'Updated Title' });
 
       expect(res.status).toBe(200);
       expect(res.body).toEqual(
         expect.objectContaining({
           success: true,
           message: 'Book updated successfully',
-        })
+        }),
       );
     });
 
@@ -236,9 +226,7 @@ describe('E2E - Books API', () => {
     });
 
     it('should return 400 for invalid ISBN format in update', async () => {
-      const res = await request(app)
-        .put('/api/books/1')
-        .send({ isbn: 'invalid-isbn' });
+      const res = await request(app).put('/api/books/1').send({ isbn: 'invalid-isbn' });
 
       expect(res.status).toBe(400);
     });
@@ -257,7 +245,7 @@ describe('E2E - Books API', () => {
         expect.objectContaining({
           success: true,
           message: 'Book deleted successfully',
-        })
+        }),
       );
     });
 
@@ -301,7 +289,7 @@ describe('E2E - Books API', () => {
           success: true,
           data: expect.any(Array),
           pagination: expect.any(Object),
-        })
+        }),
       );
     });
 
@@ -334,7 +322,7 @@ describe('E2E - Books API', () => {
         expect.objectContaining({
           success: false,
           message: 'Route not found',
-        })
+        }),
       );
     });
   });

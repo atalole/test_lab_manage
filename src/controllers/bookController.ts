@@ -92,7 +92,7 @@ export class BookController {
   // Search books
   async searchBooks(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { q: query, page, limit } :any = req.query;
+      const { q: query, page, limit }: any = req.query;
       const params: SearchQueryParams = {
         query: query as string,
         page: page ? parseInt(page as string, 10) : 1,
@@ -112,4 +112,3 @@ export class BookController {
     }
   }
 }
-

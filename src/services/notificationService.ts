@@ -9,7 +9,7 @@ import { NOTIFICATION_MESSAGES } from '../utils/notificationMessages.ts';
  */
 export async function processWishlistNotifications(
   bookId: number | string,
-  bookTitle: string
+  bookTitle: string,
 ): Promise<NotificationResult> {
   try {
     const parsedBookId = typeof bookId === 'string' ? parseInt(bookId, 10) : bookId;
@@ -26,13 +26,16 @@ export async function processWishlistNotifications(
 
     // Log notification for each user
     for (const wishlist of wishlists) {
-      const notificationMessage = NOTIFICATION_MESSAGES.WISHLIST_AVAILABLE(bookTitle, wishlist.userId);
+      const notificationMessage = NOTIFICATION_MESSAGES.WISHLIST_AVAILABLE(
+        bookTitle,
+        wishlist.userId,
+      );
       logger.info(notificationMessage, {
         userId: wishlist.userId,
         bookId: parsedBookId,
         bookTitle,
       });
-      
+
       // In a production system, you would:
       // - Store notifications in a database
       // - Send emails/SMS/push notifications
@@ -59,4 +62,3 @@ export async function processWishlistNotifications(
     throw error;
   }
 }
-

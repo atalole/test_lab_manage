@@ -10,7 +10,6 @@ jest.mock('../../src/config/logger.ts');
 
 const bookController = new BookController();
 
-
 describe('BookController', () => {
   let mockReq: Partial<Request>;
   let mockRes: Partial<Response>;
@@ -58,7 +57,7 @@ describe('BookController', () => {
       await bookController.createBook(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockRes.status).toHaveBeenCalledWith(201);
@@ -67,7 +66,7 @@ describe('BookController', () => {
           success: true,
           message: BOOK_MESSAGES.CREATED,
           data: mockBook,
-        })
+        }),
       );
     });
 
@@ -86,7 +85,7 @@ describe('BookController', () => {
       await bookController.createBook(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockNext).toHaveBeenCalledWith(error);
@@ -119,7 +118,7 @@ describe('BookController', () => {
       await bookController.getBooks(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -129,7 +128,7 @@ describe('BookController', () => {
           message: BOOK_MESSAGES.RETRIEVED_ALL,
           data: mockBooks.books,
           pagination: mockBooks.pagination,
-        })
+        }),
       );
     });
 
@@ -149,7 +148,7 @@ describe('BookController', () => {
       await bookController.getBooks(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(BookService.getBooks).toHaveBeenCalledWith({
@@ -169,7 +168,7 @@ describe('BookController', () => {
       await bookController.getBooks(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockNext).toHaveBeenCalledWith(error);
@@ -197,7 +196,7 @@ describe('BookController', () => {
       await bookController.getBookById(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -206,7 +205,7 @@ describe('BookController', () => {
           success: true,
           message: BOOK_MESSAGES.RETRIEVED,
           data: mockBook,
-        })
+        }),
       );
     });
 
@@ -219,7 +218,7 @@ describe('BookController', () => {
       await bookController.getBookById(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockNext).toHaveBeenCalledWith(error);
@@ -248,7 +247,7 @@ describe('BookController', () => {
       await bookController.updateBook(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -257,7 +256,7 @@ describe('BookController', () => {
           success: true,
           message: BOOK_MESSAGES.UPDATED,
           data: mockBook,
-        })
+        }),
       );
     });
 
@@ -271,7 +270,7 @@ describe('BookController', () => {
       await bookController.updateBook(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockNext).toHaveBeenCalledWith(error);
@@ -289,7 +288,7 @@ describe('BookController', () => {
       await bookController.deleteBook(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -297,7 +296,7 @@ describe('BookController', () => {
         expect.objectContaining({
           success: true,
           message: BOOK_MESSAGES.DELETED,
-        })
+        }),
       );
     });
 
@@ -310,7 +309,7 @@ describe('BookController', () => {
       await bookController.deleteBook(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockNext).toHaveBeenCalledWith(error);
@@ -343,7 +342,7 @@ describe('BookController', () => {
       await bookController.searchBooks(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockRes.status).toHaveBeenCalledWith(200);
@@ -353,7 +352,7 @@ describe('BookController', () => {
           message: BOOK_MESSAGES.SEARCH_COMPLETED,
           data: mockBooks.books,
           pagination: mockBooks.pagination,
-        })
+        }),
       );
     });
 
@@ -368,7 +367,7 @@ describe('BookController', () => {
       await bookController.searchBooks(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(BookService.searchBooks).toHaveBeenCalledWith({
@@ -387,7 +386,7 @@ describe('BookController', () => {
       await bookController.searchBooks(
         mockReq as Request,
         mockRes as Response,
-        mockNext as NextFunction
+        mockNext as NextFunction,
       );
 
       expect(mockNext).toHaveBeenCalledWith(error);

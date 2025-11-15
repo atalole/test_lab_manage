@@ -37,10 +37,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(requestLogger);
 
 // Swagger documentation
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
-  customCss: '.swagger-ui .topbar { display: none }',
-  customSiteTitle: 'Library Management System API Documentation',
-}));
+app.use(
+  '/api-docs',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customCss: '.swagger-ui .topbar { display: none }',
+    customSiteTitle: 'Library Management System API Documentation',
+  }),
+);
 
 /**
  * @swagger
@@ -93,7 +97,11 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}`);
   logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  logger.info(`Log level: ${process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug')}`);
+  logger.info(
+    `Log level: ${
+      process.env.LOG_LEVEL || (process.env.NODE_ENV === 'production' ? 'info' : 'debug')
+    }`,
+  );
 });
 
 // Graceful shutdown
@@ -119,4 +127,3 @@ process.on('SIGINT', async () => {
 });
 
 export default app;
-

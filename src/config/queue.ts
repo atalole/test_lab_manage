@@ -19,7 +19,7 @@ export const notificationQueue = new Bull<NotificationJobData>('wishlist-notific
 });
 
 // Process jobs
-notificationQueue.process('wishlist-notification',async (job: Job<NotificationJobData>) => {
+notificationQueue.process('wishlist-notification', async (job: Job<NotificationJobData>) => {
   const { bookId, bookTitle } = job.data;
   console.log(`Processing notification job for bookId: ${bookId}, bookTitle: ${bookTitle}`);
   await processWishlistNotifications(bookId, bookTitle);
@@ -52,4 +52,3 @@ notificationQueue.on('error', (error: Error) => {
 });
 
 export default notificationQueue;
-

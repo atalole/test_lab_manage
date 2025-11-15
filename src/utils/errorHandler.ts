@@ -1,14 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult, } from 'express-validator';
+import { validationResult } from 'express-validator';
 import logger from '../config/logger.ts';
 import { PRISMA_ERRORS, GENERAL_ERRORS } from './errors.ts';
 
 // Validation error handler middleware
-export const validationErrorHandler = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void => {
+export const validationErrorHandler = (req: Request, res: Response, next: NextFunction): void => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     logger.warn('Validation failed', {
@@ -48,8 +44,8 @@ export const errorHandler = (
   err: AppErrorInterface | PrismaError,
   req: Request,
   res: Response,
-  _next: NextFunction
-): void => {  
+  _next: NextFunction,
+): void => {
   const status = err?.status || 500;
   const isOperational = 'isOperational' in err && err.isOperational;
 
@@ -118,4 +114,3 @@ export class AppError extends Error implements AppErrorInterface {
     Error.captureStackTrace(this, this.constructor);
   }
 }
-

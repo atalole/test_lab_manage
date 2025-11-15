@@ -27,11 +27,7 @@ describe('NotificationService', () => {
 
   describe('processWishlistNotifications', () => {
     it('should process notifications for all users who wishlisted a book', async () => {
-      const mockWishlists = [
-        { userId: 1 },
-        { userId: 2 },
-        { userId: 3 },
-      ];
+      const mockWishlists = [{ userId: 1 }, { userId: 2 }, { userId: 3 }];
 
       (prisma.wishlist.findMany as jest.Mock).mockResolvedValueOnce(mockWishlists);
 
@@ -48,17 +44,17 @@ describe('NotificationService', () => {
       expect(logger.info).toHaveBeenNthCalledWith(
         1,
         expect.stringContaining('user_id: 1'),
-        expect.any(Object)
+        expect.any(Object),
       );
       expect(logger.info).toHaveBeenNthCalledWith(
         2,
         expect.stringContaining('user_id: 2'),
-        expect.any(Object)
+        expect.any(Object),
       );
       expect(logger.info).toHaveBeenNthCalledWith(
         3,
         expect.stringContaining('user_id: 3'),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -70,7 +66,7 @@ describe('NotificationService', () => {
       expect(result.processed).toBe(0);
       expect(logger.info).toHaveBeenCalledWith(
         expect.stringContaining('Processed 0 wishlist notifications'),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -83,15 +79,12 @@ describe('NotificationService', () => {
 
       expect(logger.info).toHaveBeenCalledWith(
         expect.stringContaining('The Great Gatsby'),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
     it('should return correct processed count', async () => {
-      const mockWishlists = [
-        { userId: 1 },
-        { userId: 2 },
-      ];
+      const mockWishlists = [{ userId: 1 }, { userId: 2 }];
 
       (prisma.wishlist.findMany as jest.Mock).mockResolvedValueOnce(mockWishlists);
 
@@ -159,7 +152,7 @@ describe('NotificationService', () => {
       // Check that logger was called with properly formatted message
       expect(logger.info).toHaveBeenCalledWith(
         expect.stringMatching(/Notification prepared for user_id: \d+/),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -173,7 +166,7 @@ describe('NotificationService', () => {
       expect(result.processed).toBe(1);
       expect(logger.info).toHaveBeenCalledWith(
         expect.stringContaining("The Book's Title & More: A Story"),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -187,7 +180,7 @@ describe('NotificationService', () => {
       expect(result.processed).toBe(1);
       expect(logger.info).toHaveBeenCalledWith(
         expect.stringContaining('Book 1'),
-        expect.any(Object)
+        expect.any(Object),
       );
       // Verify correct bookId was queried
       expect(prisma.wishlist.findMany).toHaveBeenCalledWith({
@@ -200,9 +193,9 @@ describe('NotificationService', () => {
       const error = new Error('Database connection failed');
       (prisma.wishlist.findMany as jest.Mock).mockRejectedValueOnce(error);
 
-      await expect(
-        processWishlistNotifications(99, 'Error Test Book')
-      ).rejects.toThrow('Database connection failed');
+      await expect(processWishlistNotifications(99, 'Error Test Book')).rejects.toThrow(
+        'Database connection failed',
+      );
     });
 
     it('should pass correct parameters to prisma query', async () => {
@@ -231,7 +224,7 @@ describe('NotificationService', () => {
           userId: 123,
           bookId: 10,
           bookTitle: 'Metadata Test',
-        })
+        }),
       );
     });
 

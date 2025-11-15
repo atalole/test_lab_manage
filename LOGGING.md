@@ -82,6 +82,7 @@ app.use(requestLogger);
 ```
 
 This logs:
+
 - Request method, URL, IP, user agent
 - Request body (for non-GET requests)
 - Query parameters
@@ -112,11 +113,13 @@ logger.info('User created', {
 ## Log Format
 
 ### Console Format
+
 ```
 2024-01-01 12:00:00:000 info: Server is running on port 3000
 ```
 
 ### File Format (JSON)
+
 ```json
 {
   "timestamp": "2024-01-01 12:00:00:000",
@@ -129,6 +132,7 @@ logger.info('User created', {
 ## Best Practices
 
 1. **Use Appropriate Log Levels**
+
    - `error`: For errors that need attention
    - `warn`: For warnings that might indicate issues
    - `info`: For important application events
@@ -136,6 +140,7 @@ logger.info('User created', {
    - `debug`: For detailed debugging information
 
 2. **Include Context**
+
    ```typescript
    // Good
    logger.error('Failed to create book', {
@@ -149,6 +154,7 @@ logger.info('User created', {
    ```
 
 3. **Don't Log Sensitive Data**
+
    ```typescript
    // Bad - logs passwords
    logger.info('User login', { email, password });
@@ -158,6 +164,7 @@ logger.info('User created', {
    ```
 
 4. **Use Structured Logging**
+
    - Always include context objects
    - Use consistent field names
    - Include relevant IDs and timestamps
@@ -178,10 +185,13 @@ logger.info('User created', {
 ## Viewing Logs
 
 ### Development
+
 Logs are displayed in the console with colors.
 
 ### Production
+
 View log files:
+
 ```bash
 # View latest error log
 tail -f logs/error-$(date +%Y-%m-%d).log
@@ -199,11 +209,13 @@ tail -f logs/http-$(date +%Y-%m-%d).log
 ## Integration with Monitoring Tools
 
 ### ELK Stack
+
 Logs are in JSON format, ready for Elasticsearch ingestion.
 
 ### CloudWatch / Datadog
+
 Configure log forwarders to send logs to your monitoring service.
 
 ### Sentry
-Integrate Sentry for error tracking alongside Winston logs.
 
+Integrate Sentry for error tracking alongside Winston logs.

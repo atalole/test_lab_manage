@@ -2,7 +2,6 @@ import winston from 'winston';
 import DailyRotateFile from 'winston-daily-rotate-file';
 import path from 'path';
 
-
 // Define log levels
 const levels = {
   error: 0,
@@ -28,16 +27,14 @@ winston.addColors(colors);
 const format = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winston.format.colorize({ all: true }),
-  winston.format.printf(
-    (info) => `${info.timestamp} ${info.level}: ${info.message}`
-  )
+  winston.format.printf((info) => `${info.timestamp} ${info.level}: ${info.message}`),
 );
 
 // Define format for file logging (JSON format for better parsing)
 const fileFormat = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winston.format.errors({ stack: true }),
-  winston.format.json()
+  winston.format.json(),
 );
 
 // Define which transports to use
@@ -63,7 +60,7 @@ if (process.env.NODE_ENV === 'production' || process.env.LOG_TO_FILE === 'true')
       maxSize: '20m',
       maxFiles: '14d',
       zippedArchive: true,
-    })
+    }),
   );
 
   // Combined log file (all levels)
@@ -75,7 +72,7 @@ if (process.env.NODE_ENV === 'production' || process.env.LOG_TO_FILE === 'true')
       maxSize: '20m',
       maxFiles: '14d',
       zippedArchive: true,
-    })
+    }),
   );
 
   // HTTP request log file
@@ -88,7 +85,7 @@ if (process.env.NODE_ENV === 'production' || process.env.LOG_TO_FILE === 'true')
       maxSize: '20m',
       maxFiles: '14d',
       zippedArchive: true,
-    })
+    }),
   );
 }
 
@@ -103,7 +100,7 @@ const logger = winston.createLogger({
     new winston.transports.Console({
       format,
     }),
-      ...(process.env.NODE_ENV === 'production' || process.env.LOG_TO_FILE === 'true'
+    ...(process.env.NODE_ENV === 'production' || process.env.LOG_TO_FILE === 'true'
       ? [
           new DailyRotateFile({
             filename: path.join(process.cwd(), 'logs/exceptions-%DATE%.log'),
@@ -120,7 +117,7 @@ const logger = winston.createLogger({
     new winston.transports.Console({
       format,
     }),
-      ...(process.env.NODE_ENV === 'production' || process.env.LOG_TO_FILE === 'true'
+    ...(process.env.NODE_ENV === 'production' || process.env.LOG_TO_FILE === 'true'
       ? [
           new DailyRotateFile({
             filename: path.join(process.cwd(), 'logs/rejections-%DATE%.log'),
@@ -136,4 +133,3 @@ const logger = winston.createLogger({
 });
 
 export default logger;
-

@@ -1,0 +1,7 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+echo "Running pre-commit: format code with Prettier"
+# Run Prettier to format files and stage any changes so the commit includes formatted files
+npm run format
+git add -A

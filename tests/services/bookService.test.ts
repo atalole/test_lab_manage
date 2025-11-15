@@ -72,7 +72,7 @@ describe('BookService', () => {
           author: 'Test Author',
           isbn: '123-456-789',
           publishedYear: 2020,
-        })
+        }),
       ).rejects.toThrow(AppError);
     });
   });
@@ -159,9 +159,7 @@ describe('BookService', () => {
     it('should throw error when book not found', async () => {
       mockPrismaBook.findFirst.mockResolvedValue(null);
 
-      await expect(
-        BookService.updateBook(999, { title: 'New Title' })
-      ).rejects.toThrow(AppError);
+      await expect(BookService.updateBook(999, { title: 'New Title' })).rejects.toThrow(AppError);
     });
 
     it('should trigger notification when status changes from Borrowed to Available', async () => {
@@ -184,7 +182,6 @@ describe('BookService', () => {
 
       expect(notificationQueue.add).toHaveBeenCalled();
       await notificationQueue.close();
-
     });
   });
 

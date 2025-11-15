@@ -110,10 +110,12 @@ npm start
 ### Swagger UI
 
 Interactive API documentation is available at:
+
 - **Development**: `http://localhost:3000/api-docs`
 - **Production**: `https://your-domain.com/api-docs`
 
 The Swagger UI provides:
+
 - Complete API endpoint documentation
 - Request/response schemas
 - Try-it-out functionality
@@ -122,6 +124,7 @@ The Swagger UI provides:
 ### OpenAPI Specification
 
 The OpenAPI 3.0 specification is available at:
+
 - `http://localhost:3000/api-docs.json`
 
 ## API Endpoints
@@ -129,6 +132,7 @@ The OpenAPI 3.0 specification is available at:
 ### Books
 
 #### Create a Book
+
 ```http
 POST /api/books
 Content-Type: application/json
@@ -143,16 +147,19 @@ Content-Type: application/json
 ```
 
 #### Get All Books (with pagination and filters)
+
 ```http
 GET /api/books?page=1&limit=10&author=Fitzgerald&publishedYear=1925
 ```
 
 #### Get Book by ID
+
 ```http
 GET /api/books/:id
 ```
 
 #### Update a Book
+
 ```http
 PUT /api/books/:id
 Content-Type: application/json
@@ -165,16 +172,19 @@ Content-Type: application/json
 **Note**: When updating a book's status from "Borrowed" to "Available", the system automatically triggers an asynchronous notification job for all users who have wishlisted that book.
 
 #### Delete a Book (Soft Delete)
+
 ```http
 DELETE /api/books/:id
 ```
 
 #### Search Books
+
 ```http
 GET /api/books/search?q=gatsby&page=1&limit=10
 ```
 
 ### Health Check
+
 ```http
 GET /health
 ```
@@ -182,6 +192,7 @@ GET /health
 ## Database Schema
 
 ### Books Table
+
 - `id`: Primary key
 - `title`: Book title
 - `author`: Author name
@@ -193,6 +204,7 @@ GET /health
 - `deletedAt`: Soft delete timestamp (nullable)
 
 ### Wishlist Table
+
 - `id`: Primary key
 - `userId`: User ID
 - `bookId`: Foreign key to books table
@@ -208,6 +220,7 @@ When a book's `availabilityStatus` is updated from "Borrowed" to "Available":
 4. For each user, a notification is logged (in production, this would send emails/SMS/push notifications)
 
 The notification message format:
+
 ```
 Notification prepared for user_id: {userId}: Book [{Title}] is now available.
 ```
@@ -232,6 +245,7 @@ The API returns appropriate HTTP status codes:
 - `500`: Internal Server Error
 
 Error response format:
+
 ```json
 {
   "success": false,
@@ -288,6 +302,7 @@ Error response format:
 ## Development
 
 ### Running Prisma Studio
+
 ```bash
 npm run prisma:studio
 ```
@@ -299,6 +314,7 @@ This opens a GUI to view and edit your database.
 ### Testing
 
 Run the test suite:
+
 ```bash
 npm test                # Run all tests
 npm run test:watch     # Watch mode
@@ -306,7 +322,6 @@ npm run test:coverage  # With coverage report
 ```
 
 For detailed testing guide, see [TESTING.md](./TESTING.md).
-
 
 ```bash
 # Build TypeScript to JavaScript
@@ -317,6 +332,7 @@ npx tsc --noEmit
 ```
 
 ### Database Migrations
+
 ```bash
 # Create a new migration
 npm run prisma:migrate
@@ -356,6 +372,7 @@ tail -f logs/http-$(date +%Y-%m-%d).log
 ```
 
 **Log Levels:**
+
 - `error`: Critical errors
 - `warn`: Warnings
 - `info`: General information
@@ -397,18 +414,21 @@ npm run test:coverage
 ### Test Setup
 
 1. **Create a test database:**
+
 ```sql
 CREATE DATABASE library_db_test;
 ```
 
 2. **Set up test environment:**
-Create a `.env.test` file (or set `NODE_ENV=test`):
+   Create a `.env.test` file (or set `NODE_ENV=test`):
+
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/library_db_test?schema=public"
 NODE_ENV=test
 ```
 
 3. **Run migrations on test database:**
+
 ```bash
 DATABASE_URL="postgresql://user:password@localhost:5432/library_db_test?schema=public" npx prisma migrate deploy
 ```
@@ -416,6 +436,7 @@ DATABASE_URL="postgresql://user:password@localhost:5432/library_db_test?schema=p
 ### Test Coverage
 
 The test suite covers:
+
 - ✅ All CRUD operations
 - ✅ Validation and error handling
 - ✅ Pagination and filtering
@@ -437,4 +458,3 @@ The test suite covers:
 ## License
 
 ISC
-
