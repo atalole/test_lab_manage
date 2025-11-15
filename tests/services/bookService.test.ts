@@ -46,7 +46,7 @@ describe('BookService', () => {
         isDeleted: false,
       };
 
-      mockPrismaBook.findUnique.mockResolvedValue(null);
+      mockPrismaBook.findFirst.mockResolvedValue(null);
       mockPrismaBook.create.mockResolvedValue(mockBook);
 
       const result = await BookService.createBook({
@@ -56,15 +56,15 @@ describe('BookService', () => {
         publishedYear: 2020,
       });
 
-      expect(mockPrismaBook.findUnique).toHaveBeenCalledWith({
-        where: { isbn: '123-456-789' },
+      expect(mockPrismaBook.findFirst).toHaveBeenCalledWith({
+        where: { isbn: '123-456-789', isDeleted: false },
       });
       expect(mockPrismaBook.create).toHaveBeenCalled();
       expect(result).toEqual(mockBook);
     });
 
     it('should throw error when ISBN already exists', async () => {
-      mockPrismaBook.findUnique.mockResolvedValue({ id: 1 });
+      mockPrismaBook.findFirst.mockResolvedValue({ id: 1 });
 
       await expect(
         BookService.createBook({
