@@ -187,6 +187,7 @@ export class BookService {
       where: { id: bookId },
       data: {
         isDeleted: true,
+        deletedAt: new Date(),
       },
     });
   }

@@ -203,13 +203,17 @@ describe('BookService', () => {
       mockPrismaBook.update.mockResolvedValue({
         ...existingBook,
         isDeleted: true,
+        deletedAt: new Date(),
       });
 
       await BookService.deleteBook(1);
 
       expect(mockPrismaBook.update).toHaveBeenCalledWith({
         where: { id: 1 },
-        data: { isDeleted: true },
+        data: {
+          isDeleted: true,
+          deletedAt: expect.any(Date),
+        },
       });
     });
 
