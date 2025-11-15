@@ -1,5 +1,4 @@
-import { PrismaClient } from '@prisma/client';
-import prisma from '../src/config/database.js';
+import prisma from '../src/config/database.ts';
 
 // Clean up database after all tests
 afterAll(async () => {

@@ -1,7 +1,8 @@
 import { Book } from '@prisma/client';
-import prisma from '../config/database.js';
-import { AppError } from '../utils/errorHandler.js';
-import { notificationQueue } from '../config/queue.js';
+import prisma from '../config/database.ts';
+import { AppError } from '../utils/errorHandler.ts';
+import { BOOK_ERRORS } from '../utils/errors.ts';
+import { notificationQueue } from '../config/queue.ts';
 import {
   BookCreateInput,
   BookUpdateInput,
@@ -9,9 +10,8 @@ import {
   SearchQueryParams,
   GetBooksResult,
   SearchBooksResult,
-  DeleteBookResult,
   AvailabilityStatus,
-} from '../types/index.js';
+} from '../types/index.ts';
 
 export class BookService {
   // Create a new book
@@ -24,7 +24,7 @@ export class BookService {
     });
 
     if (existingBook) {
-      throw new AppError('Book with this ISBN already exists', 409);
+      throw new AppError(BOOK_ERRORS.DUPLICATE_ISBN.message, BOOK_ERRORS.DUPLICATE_ISBN.statusCode);
     }
 
     const book = await prisma.book.create({
@@ -95,7 +95,7 @@ export class BookService {
     });
 
     if (!book) {
-      throw new AppError('Book not found', 404);
+      throw new AppError(BOOK_ERRORS.NOT_FOUND.message, BOOK_ERRORS.NOT_FOUND.statusCode);
     }
 
     return book;
@@ -114,7 +114,7 @@ export class BookService {
     });
 
     if (!existingBook) {
-      throw new AppError('Book not found', 404);
+      throw new AppError(BOOK_ERRORS.NOT_FOUND.message, BOOK_ERRORS.NOT_FOUND.statusCode);
     }
 
     // Check for duplicate ISBN if ISBN is being updated
@@ -124,7 +124,7 @@ export class BookService {
       });
 
       if (duplicateBook) {
-        throw new AppError('Book with this ISBN already exists', 409);
+        throw new AppError(BOOK_ERRORS.DUPLICATE_ISBN.message, BOOK_ERRORS.DUPLICATE_ISBN.statusCode);
       }
     }
 
@@ -159,7 +159,7 @@ export class BookService {
   }
 
   // Soft delete a book
-  static async deleteBook(id: string | number): Promise<DeleteBookResult> {
+  static async deleteBook(id: string | number): Promise<void> {
     const bookId = typeof id === 'string' ? parseInt(id, 10) : id;
 
     const book = await prisma.book.findFirst({
@@ -170,7 +170,7 @@ export class BookService {
     });
 
     if (!book) {
-      throw new AppError('Book not found', 404);
+      throw new AppError(BOOK_ERRORS.NOT_FOUND.message, BOOK_ERRORS.NOT_FOUND.statusCode);
     }
 
     // Soft delete
@@ -180,13 +180,11 @@ export class BookService {
         deletedAt: new Date(),
       },
     });
-
-    return { message: 'Book deleted successfully' };
   }
 
   // Search books by title or author
   static async searchBooks(params: SearchQueryParams): Promise<SearchBooksResult> {
-    const { q: searchQuery, page = 1, limit = 10 } = params;
+    const { query: searchQuery, page = 1, limit = 10 } = params;
     const skip = (page - 1) * limit;
     const searchTerm = searchQuery.trim();
 

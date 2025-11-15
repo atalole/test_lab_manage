@@ -52,7 +52,7 @@ export interface BookQueryParams extends PaginationParams {
 }
 
 export interface SearchQueryParams extends PaginationParams {
-  q: string;
+  query: string;
 }
 
 // API Response types

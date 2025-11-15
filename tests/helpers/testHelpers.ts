@@ -1,4 +1,4 @@
-import prisma from '../../src/config/database';
+import prisma from '../../src/config/database.ts';
 
 /**
  * Clean the database (useful for test isolation)

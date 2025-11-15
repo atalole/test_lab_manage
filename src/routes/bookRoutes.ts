@@ -1,13 +1,15 @@
 import express, { Router } from 'express';
-import { BookController } from '../controllers/bookController.js';
+import { BookController } from '../controllers/bookController.ts';
 import {
   validateCreateBook,
   validateUpdateBook,
   validateQueryParams,
   validateSearch,
-} from '../middleware/validation.js';
+} from '../middleware/validation.ts';
 
 const router: Router = express.Router();
+
+const bookController = new BookController();
 
 /**
  * @swagger
@@ -65,7 +67,7 @@ const router: Router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.post('/', validateCreateBook, BookController.createBook);
+router.post('/', validateCreateBook, bookController.createBook.bind(bookController));
 
 /**
  * @swagger
@@ -143,7 +145,7 @@ router.post('/', validateCreateBook, BookController.createBook);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/', validateQueryParams, BookController.getBooks);
+router.get('/', validateQueryParams, bookController.getBooks.bind(bookController));
 
 /**
  * @swagger
@@ -199,7 +201,7 @@ router.get('/', validateQueryParams, BookController.getBooks);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/search', validateSearch, BookController.searchBooks);
+router.get('/search', validateSearch, bookController.searchBooks.bind(bookController));
 
 /**
  * @swagger
@@ -234,7 +236,7 @@ router.get('/search', validateSearch, BookController.searchBooks);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.get('/:id', BookController.getBookById);
+router.get('/:id', bookController.getBookById.bind(bookController));
 
 /**
  * @swagger
@@ -294,7 +296,7 @@ router.get('/:id', BookController.getBookById);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.put('/:id', validateUpdateBook, BookController.updateBook);
+router.put('/:id', validateUpdateBook, bookController.updateBook.bind(bookController));
 
 /**
  * @swagger
@@ -330,6 +332,6 @@ router.put('/:id', validateUpdateBook, BookController.updateBook);
  *             schema:
  *               $ref: '#/components/schemas/Error'
  */
-router.delete('/:id', BookController.deleteBook);
+router.delete('/:id', bookController.deleteBook.bind(bookController));
 
 export default router;

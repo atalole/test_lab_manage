@@ -4,12 +4,12 @@
  */
 
 import request from 'supertest';
-import app from '../../src/server.js';
-import { BookService } from '../../src/services/bookService.js';
+import app from '../../src/server.ts';
+import { BookService } from '../../src/services/bookService.ts';
 
 // Mock BookService to isolate API layer tests
-jest.mock('../../src/services/bookService.js');
-jest.mock('../../src/config/logger.js');
+jest.mock('../../src/services/bookService.ts');
+jest.mock('../../src/config/logger.ts');
 
 describe('E2E - Books API', () => {
   beforeEach(() => {

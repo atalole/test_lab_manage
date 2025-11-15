@@ -1,7 +1,7 @@
 import Bull, { Job } from 'bull';
-import { processWishlistNotifications } from '../services/notificationService.js';
-import { NotificationJobData } from '../types/index.js';
-import logger from './logger.js';
+import { processWishlistNotifications } from '../services/notificationService.ts';
+import { NotificationJobData } from '../types/index.ts';
+import logger from './logger.ts';
 
 // Create notification queue
 export const notificationQueue = new Bull<NotificationJobData>('wishlist-notifications', {
@@ -19,8 +19,9 @@ export const notificationQueue = new Bull<NotificationJobData>('wishlist-notific
 });
 
 // Process jobs
-notificationQueue.process(async (job: Job<NotificationJobData>) => {
+notificationQueue.process('wishlist-notification',async (job: Job<NotificationJobData>) => {
   const { bookId, bookTitle } = job.data;
+  console.log(`Processing notification job for bookId: ${bookId}, bookTitle: ${bookTitle}`);
   await processWishlistNotifications(bookId, bookTitle);
 });
 

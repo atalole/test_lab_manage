@@ -1,11 +1,15 @@
-import { BookController } from '../../src/controllers/bookController.js';
-import { BookService } from '../../src/services/bookService.js';
-import { AppError } from '../../src/utils/errorHandler.js';
+import { BookController } from '../../src/controllers/bookController.ts';
+import { BookService } from '../../src/services/bookService.ts';
+import { AppError } from '../../src/utils/errorHandler.ts';
+import { BOOK_MESSAGES } from '../../src/utils/messages.ts';
 import { Request, Response, NextFunction } from 'express';
 
 // Mock dependencies
-jest.mock('../../src/services/bookService.js');
-jest.mock('../../src/config/logger.js');
+jest.mock('../../src/services/bookService.ts');
+jest.mock('../../src/config/logger.ts');
+
+const bookController = new BookController();
+
 
 describe('BookController', () => {
   let mockReq: Partial<Request>;
@@ -51,7 +55,7 @@ describe('BookController', () => {
 
       (BookService.createBook as jest.Mock).mockResolvedValue(mockBook);
 
-      await BookController.createBook(
+      await bookController.createBook(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -61,7 +65,7 @@ describe('BookController', () => {
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: true,
-          message: 'Book created successfully',
+          message: BOOK_MESSAGES.CREATED,
           data: mockBook,
         })
       );
@@ -79,7 +83,7 @@ describe('BookController', () => {
 
       (BookService.createBook as jest.Mock).mockRejectedValue(error);
 
-      await BookController.createBook(
+      await bookController.createBook(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -112,7 +116,7 @@ describe('BookController', () => {
 
       (BookService.getBooks as jest.Mock).mockResolvedValue(mockBooks);
 
-      await BookController.getBooks(
+      await bookController.getBooks(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -122,6 +126,7 @@ describe('BookController', () => {
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: true,
+          message: BOOK_MESSAGES.RETRIEVED_ALL,
           data: mockBooks.books,
           pagination: mockBooks.pagination,
         })
@@ -141,7 +146,7 @@ describe('BookController', () => {
         pagination: { page: 2, limit: 20, total: 0, totalPages: 0 },
       });
 
-      await BookController.getBooks(
+      await bookController.getBooks(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -161,7 +166,7 @@ describe('BookController', () => {
 
       (BookService.getBooks as jest.Mock).mockRejectedValue(error);
 
-      await BookController.getBooks(
+      await bookController.getBooks(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -189,7 +194,7 @@ describe('BookController', () => {
 
       (BookService.getBookById as jest.Mock).mockResolvedValue(mockBook);
 
-      await BookController.getBookById(
+      await bookController.getBookById(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -199,6 +204,7 @@ describe('BookController', () => {
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: true,
+          message: BOOK_MESSAGES.RETRIEVED,
           data: mockBook,
         })
       );
@@ -210,7 +216,7 @@ describe('BookController', () => {
 
       (BookService.getBookById as jest.Mock).mockRejectedValue(error);
 
-      await BookController.getBookById(
+      await bookController.getBookById(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -239,7 +245,7 @@ describe('BookController', () => {
 
       (BookService.updateBook as jest.Mock).mockResolvedValue(mockBook);
 
-      await BookController.updateBook(
+      await bookController.updateBook(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -249,6 +255,7 @@ describe('BookController', () => {
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: true,
+          message: BOOK_MESSAGES.UPDATED,
           data: mockBook,
         })
       );
@@ -261,7 +268,7 @@ describe('BookController', () => {
 
       (BookService.updateBook as jest.Mock).mockRejectedValue(error);
 
-      await BookController.updateBook(
+      await bookController.updateBook(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -279,7 +286,7 @@ describe('BookController', () => {
         message: 'Book deleted successfully',
       });
 
-      await BookController.deleteBook(
+      await bookController.deleteBook(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -289,7 +296,7 @@ describe('BookController', () => {
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: true,
-          message: 'Book deleted successfully',
+          message: BOOK_MESSAGES.DELETED,
         })
       );
     });
@@ -300,7 +307,7 @@ describe('BookController', () => {
 
       (BookService.deleteBook as jest.Mock).mockRejectedValue(error);
 
-      await BookController.deleteBook(
+      await bookController.deleteBook(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -333,7 +340,7 @@ describe('BookController', () => {
 
       (BookService.searchBooks as jest.Mock).mockResolvedValue(mockBooks);
 
-      await BookController.searchBooks(
+      await bookController.searchBooks(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
@@ -343,6 +350,7 @@ describe('BookController', () => {
       expect(mockRes.json).toHaveBeenCalledWith(
         expect.objectContaining({
           success: true,
+          message: BOOK_MESSAGES.SEARCH_COMPLETED,
           data: mockBooks.books,
           pagination: mockBooks.pagination,
         })
@@ -357,14 +365,14 @@ describe('BookController', () => {
         pagination: { page: 2, limit: 20, total: 0, totalPages: 0 },
       });
 
-      await BookController.searchBooks(
+      await bookController.searchBooks(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction
       );
 
       expect(BookService.searchBooks).toHaveBeenCalledWith({
-        q: 'Search Term',
+        query: 'Search Term',
         page: 2,
         limit: 20,
       });
@@ -376,7 +384,7 @@ describe('BookController', () => {
 
       (BookService.searchBooks as jest.Mock).mockRejectedValue(error);
 
-      await BookController.searchBooks(
+      await bookController.searchBooks(
         mockReq as Request,
         mockRes as Response,
         mockNext as NextFunction

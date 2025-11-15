@@ -1,5 +1,5 @@
 import { body, query, ValidationChain } from 'express-validator';
-import { validationErrorHandler } from '../utils/errorHandler.js';
+import { validationErrorHandler } from '../utils/errorHandler.ts';
 
 // Book creation validation
 export const validateCreateBook: ValidationChain[] = [

@@ -1,6 +1,7 @@
-import prisma from '../config/database.js';
-import { NotificationResult } from '../types/index.js';
-import logger from '../config/logger.js';
+import prisma from '../config/database.ts';
+import { NotificationResult } from '../types/index.ts';
+import logger from '../config/logger.ts';
+import { NOTIFICATION_MESSAGES } from '../utils/notificationMessages.ts';
 
 /**
  * Process wishlist notifications for a book that became available
@@ -25,7 +26,7 @@ export async function processWishlistNotifications(
 
     // Log notification for each user
     for (const wishlist of wishlists) {
-      const notificationMessage = `Notification prepared for user_id: ${wishlist.userId}: Book [${bookTitle}] is now available.`;
+      const notificationMessage = NOTIFICATION_MESSAGES.WISHLIST_AVAILABLE(bookTitle, wishlist.userId);
       logger.info(notificationMessage, {
         userId: wishlist.userId,
         bookId: parsedBookId,
@@ -38,7 +39,7 @@ export async function processWishlistNotifications(
       // - Use a notification service
     }
 
-    logger.info(`Processed ${wishlists.length} wishlist notifications`, {
+    logger.info(NOTIFICATION_MESSAGES.WISHLIST_PROCESSED(wishlists.length, bookTitle), {
       bookId: parsedBookId,
       bookTitle,
       count: wishlists.length,
@@ -49,7 +50,7 @@ export async function processWishlistNotifications(
       message: `Processed ${wishlists.length} wishlist notifications for book: ${bookTitle}`,
     };
   } catch (error) {
-    logger.error('Error processing wishlist notifications', {
+    logger.error(NOTIFICATION_MESSAGES.WISHLIST_PROCESSING_ERROR, {
       bookId: typeof bookId === 'string' ? parseInt(bookId, 10) : bookId,
       bookTitle,
       error: error instanceof Error ? error.message : String(error),

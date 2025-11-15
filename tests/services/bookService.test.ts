@@ -3,8 +3,8 @@
  */
 
 // Mock dependencies before importing
-jest.mock('../../src/config/logger.js');
-jest.mock('../../src/config/queue.js');
+jest.mock('../../src/config/logger.ts');
+jest.mock('../../src/config/queue.ts');
 
 // Mock prisma
 const mockPrismaBook = {
@@ -16,16 +16,16 @@ const mockPrismaBook = {
   update: jest.fn(),
 };
 
-jest.mock('../../src/config/database.js', () => ({
+jest.mock('../../src/config/database.ts', () => ({
   __esModule: true,
   default: {
     book: mockPrismaBook,
   },
 }));
 
-import { BookService } from '../../src/services/bookService.js';
-import { AppError } from '../../src/utils/errorHandler.js';
-import { notificationQueue } from '../../src/config/queue.js';
+import { BookService } from '../../src/services/bookService.ts';
+import { AppError } from '../../src/utils/errorHandler.ts';
+import { notificationQueue } from '../../src/config/queue.ts';
 
 describe('BookService', () => {
   beforeEach(() => {
@@ -183,6 +183,8 @@ describe('BookService', () => {
       await BookService.updateBook(1, { availabilityStatus: 'Available' as any });
 
       expect(notificationQueue.add).toHaveBeenCalled();
+      await notificationQueue.close();
+
     });
   });
 
@@ -206,9 +208,12 @@ describe('BookService', () => {
         deletedAt: new Date(),
       });
 
-      const result = await BookService.deleteBook(1);
+      await BookService.deleteBook(1);
 
-      expect(result.message).toBe('Book deleted successfully');
+      expect(mockPrismaBook.update).toHaveBeenCalledWith({
+        where: { id: 1 },
+        data: { deletedAt: expect.any(Date) },
+      });
     });
 
     it('should throw error when book not found', async () => {
@@ -237,7 +242,7 @@ describe('BookService', () => {
       mockPrismaBook.findMany.mockResolvedValue(mockBooks);
       mockPrismaBook.count.mockResolvedValue(1);
 
-      const result = await BookService.searchBooks({ q: 'Test', page: 1, limit: 10 });
+      const result = await BookService.searchBooks({ query: 'Test', page: 1, limit: 10 });
 
       expect(result.books).toEqual(mockBooks);
       expect(result.pagination.total).toBe(1);
@@ -247,7 +252,7 @@ describe('BookService', () => {
       mockPrismaBook.findMany.mockResolvedValue([]);
       mockPrismaBook.count.mockResolvedValue(0);
 
-      const result = await BookService.searchBooks({ q: 'NonExistent', page: 1, limit: 10 });
+      const result = await BookService.searchBooks({ query: 'NonExistent', page: 1, limit: 10 });
 
       expect(result.books).toEqual([]);
       expect(result.pagination.total).toBe(0);

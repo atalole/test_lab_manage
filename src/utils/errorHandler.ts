@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult, } from 'express-validator';
-import logger from '../config/logger.js';
+import logger from '../config/logger.ts';
+import { PRISMA_ERRORS, GENERAL_ERRORS } from './errors.ts';
 
 // Validation error handler middleware
 export const validationErrorHandler = (
@@ -18,7 +19,7 @@ export const validationErrorHandler = (
     });
     res.status(400).json({
       success: false,
-      message: 'Validation failed',
+      message: GENERAL_ERRORS.VALIDATION_FAILED,
       errors: errors.array(),
     });
     return;
@@ -42,11 +43,13 @@ export interface AppErrorInterface extends Error {
 }
 
 // Global error handler
+// IMPORTANT: Must have 4 parameters (err, req, res, next) for Express to recognize it as error middleware
 export const errorHandler = (
   err: AppErrorInterface | PrismaError,
   req: Request,
   res: Response,
-): void => {
+  _next: NextFunction
+): void => {  
   const status = err?.status || 500;
   const isOperational = 'isOperational' in err && err.isOperational;
 
@@ -78,7 +81,8 @@ export const errorHandler = (
   if ('code' in err && err.code === 'P2002') {
     res.status(409).json({
       success: false,
-      message: 'Duplicate entry. This ISBN already exists.',
+      status,
+      message: PRISMA_ERRORS.DUPLICATE_CONSTRAINT.message,
     });
     return;
   }
@@ -87,7 +91,8 @@ export const errorHandler = (
   if ('code' in err && err.code === 'P2025') {
     res.status(404).json({
       success: false,
-      message: 'Resource not found',
+      status,
+      message: PRISMA_ERRORS.RECORD_NOT_FOUND.message,
     });
     return;
   }
@@ -95,7 +100,8 @@ export const errorHandler = (
   // Default error
   res.status(status).json({
     success: false,
-    message: err.message || 'Internal server error',
+    status,
+    message: err.message || GENERAL_ERRORS.INTERNAL_SERVER_ERROR,
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
   });
 };

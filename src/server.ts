@@ -4,12 +4,12 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './config/swagger.js';
-import bookRoutes from './routes/bookRoutes.js';
-import { errorHandler } from './middleware/errorHandler.js';
-import { requestLogger } from './middleware/logger.js';
-import { notificationQueue } from './config/queue.js';
-import logger from './config/logger.js';
+import swaggerSpec from './config/swagger.ts';
+import bookRoutes from './routes/bookRoutes.ts';
+import { errorHandler } from './middleware/errorHandler.ts';
+import { requestLogger } from './middleware/logger.ts';
+import { notificationQueue } from './config/queue.ts';
+import logger from './config/logger.ts';
 
 // Load environment variables
 dotenv.config();
@@ -97,12 +97,19 @@ app.listen(PORT, () => {
 });
 
 // Graceful shutdown
+// SIGINT = Interrupt Signal
+// Triggered when you press Ctrl + C in the terminal.
+// Used by developers to stop the application manually.
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM signal received: closing HTTP server');
   await notificationQueue.close();
   logger.info('Server closed gracefully');
   process.exit(0);
 });
+
+// SIGTERM = Termination Signal
+// Sent by OS or services like Kubernetes, PM2, Docker when stopping or restarting your app.
+// Used for graceful shutdown (stop safely, not immediately kill).
 
 process.on('SIGINT', async () => {
   logger.info('SIGINT signal received: closing HTTP server');

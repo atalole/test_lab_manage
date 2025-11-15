@@ -43,7 +43,11 @@ npm run test:coverage
 
 ### Specific Test File
 ```bash
-npm test -- tests/services/bookService.test.js
+npm test -- tests/services/bookService.test.ts
+```
+
+```bash
+npm test -- tests/services/notificationService.test.ts
 ```
 
 ## Test Database Setup
