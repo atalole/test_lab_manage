@@ -12,20 +12,24 @@ A robust and scalable backend API for managing a library's book inventory with a
 - **Asynchronous Notifications**: Background job processing for wishlist notifications when books become available
 - **RESTful API**: Clean API design following REST principles
 - **Error Handling**: Comprehensive error handling with proper HTTP status codes
+- **Security**: Helmet.js for security headers, CORS support, and rate limiting
+- **API Documentation**: Interactive Swagger/OpenAPI documentation
+- **Logging**: Comprehensive logging with Winston and file rotation
 
 ## Tech Stack
 
-- **TypeScript**: Type-safe JavaScript
-- **Node.js**: Runtime environment
-- **Express.js**: Web framework
-- **PostgreSQL**: Database
-- **Prisma**: ORM for type-safe database access
-- **Bull**: Job queue for asynchronous processing
-- **Redis**: Message broker for job queue
-- **express-validator**: Input validation
+- **TypeScript**: Type-safe JavaScript (v5.5.4)
+- **Node.js**: Runtime environment (v18 or higher)
+- **Express.js**: Web framework (v4.21.1)
+- **PostgreSQL**: Database (v16 via Docker)
+- **Prisma**: ORM for type-safe database access (v5.19.1)
+- **Bull**: Job queue for asynchronous processing (v4.13.0)
+- **Redis**: Message broker for job queue (v7 via Docker)
+- **express-validator**: Input validation (v7.2.0)
 - **Docker**: Containerization for PostgreSQL and Redis
 - **Swagger/OpenAPI**: API documentation and interactive testing
-- **Winston**: Comprehensive logging with file rotation
+- **Winston**: Comprehensive logging with file rotation (v3.15.0)
+- **Jest**: Testing framework with TypeScript support
 
 ## Prerequisites
 
@@ -33,6 +37,7 @@ A robust and scalable backend API for managing a library's book inventory with a
 - PostgreSQL (v12 or higher) OR Docker
 - Redis (v6 or higher) OR Docker
 - TypeScript (v5 or higher)
+- npm or yarn
 
 ## Installation
 
@@ -58,15 +63,21 @@ LOG_LEVEL=debug
 LOG_TO_FILE=false
 ```
 
+**Note**: When using Docker Compose, use these values:
+
+```env
+DATABASE_URL="postgresql://library_user:library_password@localhost:5432/library_db?schema=public"
+REDIS_HOST=localhost
+REDIS_PORT=6379
+```
+
 3. **Set up Docker services (Recommended):**
 
 ```bash
-
-# Or use the production compose file
 docker-compose up -d
 ```
 
-See [DOCKER.md](./DOCKER.md) for detailed Docker setup instructions.
+This will start PostgreSQL and Redis containers. See [DOCKER.md](./DOCKER.md) for detailed Docker setup instructions.
 
 **Alternative: Manual Setup**
 
@@ -97,13 +108,15 @@ npm run prisma:seed
 5. **Build and start the server:**
 
 ```bash
-# Development mode (with auto-reload)
+# Development mode (with auto-reload using tsx)
 npm run dev
 
 # Production mode
 npm run build
 npm start
 ```
+
+The server will start on `http://localhost:3000` (or the port specified in your `.env` file).
 
 ## API Documentation
 
@@ -127,6 +140,8 @@ The OpenAPI 3.0 specification is available at:
 
 - `http://localhost:3000/api-docs.json`
 
+For detailed Swagger documentation, see [SWAGGER.md](./SWAGGER.md).
+
 ## API Endpoints
 
 ### Books
@@ -146,17 +161,30 @@ Content-Type: application/json
 }
 ```
 
+**Response**: `201 Created`
+
 #### Get All Books (with pagination and filters)
 
 ```http
 GET /api/books?page=1&limit=10&author=Fitzgerald&publishedYear=1925
 ```
 
+**Query Parameters**:
+
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10, max: 100)
+- `author` (optional): Filter by author (partial match, case-insensitive)
+- `publishedYear` (optional): Filter by published year
+
+**Response**: `200 OK` with paginated results
+
 #### Get Book by ID
 
 ```http
 GET /api/books/:id
 ```
+
+**Response**: `200 OK` or `404 Not Found`
 
 #### Update a Book
 
@@ -169,7 +197,9 @@ Content-Type: application/json
 }
 ```
 
-**Note**: When updating a book's status from "Borrowed" to "Available", the system automatically triggers an asynchronous notification job for all users who have wishlisted that book.
+**Note**: When updating a book's status from "Borrowed" to "Available", the system automatically triggers an asynchronous notification job for all users who have wishlisted that book. The response includes an `X-Notification-Triggered` header indicating if notifications were queued.
+
+**Response**: `200 OK` or `404 Not Found` or `400 Bad Request`
 
 #### Delete a Book (Soft Delete)
 
@@ -177,11 +207,21 @@ Content-Type: application/json
 DELETE /api/books/:id
 ```
 
+**Response**: `200 OK` or `404 Not Found`
+
 #### Search Books
 
 ```http
 GET /api/books/search?q=gatsby&page=1&limit=10
 ```
+
+**Query Parameters**:
+
+- `q` (required): Search query (searches in title and author)
+- `page` (optional): Page number (default: 1)
+- `limit` (optional): Items per page (default: 10, max: 100)
+
+**Response**: `200 OK` with paginated search results
 
 ### Health Check
 
@@ -189,26 +229,33 @@ GET /api/books/search?q=gatsby&page=1&limit=10
 GET /health
 ```
 
+**Response**: `200 OK` with server status and timestamp
+
 ## Database Schema
 
 ### Books Table
 
-- `id`: Primary key
-- `title`: Book title
-- `author`: Author name
-- `isbn`: Unique ISBN (10 or 13 digits)
-- `publishedYear`: Year of publication
-- `availabilityStatus`: "Available" or "Borrowed"
-- `createdAt`: Timestamp
-- `updatedAt`: Timestamp
-- `deletedAt`: Soft delete timestamp (nullable)
+- `id`: Primary key (integer, auto-increment)
+- `title`: Book title (string, 1-500 characters)
+- `author`: Author name (string, 1-200 characters)
+- `isbn`: Unique ISBN (string, 10 or 13 digits)
+- `publishedYear`: Year of publication (integer, 1000-2100)
+- `availabilityStatus`: "Available" or "Borrowed" (string, default: "Available")
+- `createdAt`: Timestamp (DateTime)
+- `updatedAt`: Timestamp (DateTime, auto-updated)
+- `deletedAt`: Soft delete timestamp (DateTime, nullable)
+
+**Indexes**: `author`, `publishedYear`, `availabilityStatus`, `deletedAt`
 
 ### Wishlist Table
 
-- `id`: Primary key
-- `userId`: User ID
-- `bookId`: Foreign key to books table
-- `createdAt`: Timestamp
+- `id`: Primary key (integer, auto-increment)
+- `userId`: User ID (integer)
+- `bookId`: Foreign key to books table (integer)
+- `createdAt`: Timestamp (DateTime)
+
+**Indexes**: `bookId`, `userId`
+**Unique Constraint**: `(userId, bookId)`
 
 ## Asynchronous Notification System
 
@@ -225,10 +272,17 @@ The notification message format:
 Notification prepared for user_id: {userId}: Book [{Title}] is now available.
 ```
 
+**Testing the Notification System**:
+
+1. Create a book with status "Borrowed"
+2. Add it to a user's wishlist (manually via Prisma Studio or API)
+3. Update the book's status to "Available"
+4. Check the console logs for notification messages
+
 ## Validation Rules
 
 - **ISBN**: Must be unique and either 10 or 13 digits
-- **Published Year**: Must be a valid year (1000 to current year + 1)
+- **Published Year**: Must be a valid year (1000 to 2100)
 - **Title**: Required, 1-500 characters
 - **Author**: Required, 1-200 characters
 - **Availability Status**: Must be either "Available" or "Borrowed"
@@ -250,7 +304,13 @@ Error response format:
 {
   "success": false,
   "message": "Error message",
-  "errors": [] // For validation errors
+  "errors": [
+    {
+      "field": "isbn",
+      "message": "ISBN must be 10 or 13 digits",
+      "value": "invalid"
+    }
+  ]
 }
 ```
 
@@ -260,32 +320,46 @@ Error response format:
 .
 ├── prisma/
 │   ├── schema.prisma       # Database schema
-│   └── seed.ts             # Database seeding script
+│   ├── seed.ts             # Database seeding script
+│   └── migrations/         # Database migration files
 ├── src/
 │   ├── config/
 │   │   ├── database.ts      # Prisma client setup
 │   │   ├── redis.ts        # Redis connection
-│   │   └── queue.ts        # Bull queue setup
+│   │   ├── queue.ts        # Bull queue setup
+│   │   ├── logger.ts        # Winston logger configuration
+│   │   └── swagger.ts       # Swagger/OpenAPI configuration
 │   ├── controllers/
 │   │   └── bookController.ts
 │   ├── services/
 │   │   ├── bookService.ts
 │   │   └── notificationService.ts
 │   ├── middleware/
-│   │   ├── validation.ts
-│   │   └── errorHandler.ts
+│   │   ├── validation.ts    # Request validation middleware
+│   │   ├── errorHandler.ts  # Global error handler
+│   │   └── logger.ts        # HTTP request logger
 │   ├── routes/
 │   │   └── bookRoutes.ts
 │   ├── types/
-│   │   └── index.ts        # TypeScript type definitions
+│   │   └── index.ts         # TypeScript type definitions
 │   ├── utils/
-│   │   └── errorHandler.ts
-│   └── server.ts           # Express app entry point
-├── docker-compose.yml      # Production Docker setup
-├── docker-compose.dev.yml  # Development Docker setup
-├── Dockerfile              # Application Docker image
-├── tsconfig.json           # TypeScript configuration
-├── .env.example
+│   │   ├── errorHandler.ts  # Error utility functions
+│   │   ├── errors.ts        # Custom error classes
+│   │   ├── messages.ts      # Success/error messages
+│   │   └── notificationMessages.ts
+│   └── server.ts            # Express app entry point
+├── tests/
+│   ├── controllers/         # Controller unit tests
+│   ├── services/            # Service unit tests
+│   ├── e2e/                 # End-to-end tests
+│   ├── helpers/             # Test helper functions
+│   ├── setup.js             # Test setup configuration
+│   └── README.md
+├── docker-compose.yml       # Docker Compose configuration
+├── Dockerfile               # Application Docker image
+├── jest.config.js           # Jest configuration
+├── jest.setup.ts            # Jest setup file
+├── tsconfig.json            # TypeScript configuration
 ├── package.json
 └── README.md
 ```
@@ -296,8 +370,10 @@ Error response format:
 2. **Pagination**: Prevents loading large datasets into memory
 3. **Job Queue**: Decouples notification processing from API requests
 4. **Connection Pooling**: Prisma handles database connection pooling
-5. **Rate Limiting**: Protects API from abuse
+5. **Rate Limiting**: Protects API from abuse (100 requests per 15 minutes per IP)
 6. **Soft Deletes**: Maintains data integrity and audit trail
+7. **Security Headers**: Helmet.js provides security headers
+8. **CORS**: Configurable Cross-Origin Resource Sharing
 
 ## Development
 
@@ -311,6 +387,14 @@ This opens a GUI to view and edit your database.
 
 ### TypeScript
 
+```bash
+# Build TypeScript to JavaScript
+npm run build
+
+# Type checking (via tsconfig.json)
+npx tsc --noEmit
+```
+
 ### Testing
 
 Run the test suite:
@@ -322,14 +406,6 @@ npm run test:coverage  # With coverage report
 ```
 
 For detailed testing guide, see [TESTING.md](./TESTING.md).
-
-```bash
-# Build TypeScript to JavaScript
-npm run build
-
-# Type checking (via tsconfig.json)
-npx tsc --noEmit
-```
 
 ### Database Migrations
 
@@ -371,7 +447,7 @@ tail -f logs/error-$(date +%Y-%m-%d).log
 tail -f logs/http-$(date +%Y-%m-%d).log
 ```
 
-**Log Levels:**
+**Log Levels**:
 
 - `error`: Critical errors
 - `warn`: Warnings
@@ -379,14 +455,22 @@ tail -f logs/http-$(date +%Y-%m-%d).log
 - `http`: HTTP requests/responses
 - `debug`: Detailed debugging (development only)
 
+**Environment Variables**:
+
+- `LOG_LEVEL`: Set log level (error, warn, info, http, debug)
+- `LOG_TO_FILE`: Enable file logging ("true" or "false", string)
+
 See [LOGGING.md](./LOGGING.md) for detailed logging documentation.
 
-## Testing the Notification System
+### Code Formatting
 
-1. Create a book with status "Borrowed"
-2. Add it to a user's wishlist (manually via Prisma Studio or API)
-3. Update the book's status to "Available"
-4. Check the console logs for notification messages
+```bash
+# Format code
+npm run format
+
+# Check formatting
+npm run format:check
+```
 
 ## Testing
 
@@ -420,11 +504,14 @@ CREATE DATABASE library_db_test;
 ```
 
 2. **Set up test environment:**
-   Create a `.env.test` file (or set `NODE_ENV=test`):
+
+Create a `.env.test` file (or set `NODE_ENV=test`):
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/library_db_test?schema=public"
 NODE_ENV=test
+REDIS_HOST=localhost
+REDIS_PORT=6379
 ```
 
 3. **Run migrations on test database:**
@@ -447,13 +534,42 @@ The test suite covers:
 
 ## Production Considerations
 
-1. **Environment Variables**: Use secure environment variable management
+1. **Environment Variables**: Use secure environment variable management (e.g., AWS Secrets Manager, HashiCorp Vault)
 2. **Database**: Use connection pooling and read replicas for scaling
 3. **Redis**: Use Redis Cluster for high availability
-4. **Monitoring**: Add logging and monitoring (e.g., Winston, Sentry)
-5. **Notifications**: Integrate with email/SMS/push notification services
+4. **Monitoring**: Add application monitoring (e.g., Sentry, DataDog, New Relic)
+5. **Notifications**: Integrate with email/SMS/push notification services (SendGrid, Twilio, Firebase)
 6. **Caching**: Implement Redis caching for frequently accessed data
 7. **Load Balancing**: Use a load balancer for multiple server instances
+8. **HTTPS**: Always use HTTPS in production
+9. **API Documentation**: Consider adding authentication to `/api-docs` endpoint in production
+10. **Logging**: Ensure proper log aggregation and monitoring in production
+11. **Database Backups**: Implement regular database backups
+12. **Health Checks**: Set up health check monitoring for all services
+
+## Additional Documentation
+
+- [DOCKER.md](./DOCKER.md) - Detailed Docker setup and usage
+- [SETUP.md](./SETUP.md) - Quick setup guide
+- [TESTING.md](./TESTING.md) - Comprehensive testing documentation
+- [LOGGING.md](./LOGGING.md) - Logging configuration and usage
+- [SWAGGER.md](./SWAGGER.md) - Swagger/OpenAPI documentation guide
+
+## Scripts Reference
+
+- `npm run dev` - Start development server with auto-reload
+- `npm run build` - Build TypeScript to JavaScript
+- `npm start` - Start production server
+- `npm test` - Run all tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Run tests with coverage report
+- `npm run prisma:generate` - Generate Prisma Client
+- `npm run prisma:migrate` - Run database migrations
+- `npm run prisma:studio` - Open Prisma Studio GUI
+- `npm run prisma:seed` - Seed the database
+- `npm run format` - Format code with Prettier
+- `npm run format:check` - Check code formatting
+- `npm run verify` - Run tests (alias for `npm test`)
 
 ## License
 
