@@ -18,9 +18,12 @@ export class BookService {
   static async createBook(data: BookCreateInput): Promise<Book> {
     const { title, author, isbn, publishedYear, availabilityStatus = 'Available' } = data;
 
-    // Check for duplicate ISBN
-    const existingBook = await prisma.book.findUnique({
-      where: { isbn },
+    // Check for duplicate ISBN (only for non-deleted books)
+    const existingBook = await prisma.book.findFirst({
+      where: {
+        isbn,
+        isDeleted: false,
+      },
     });
 
     if (existingBook) {
@@ -46,11 +49,11 @@ export class BookService {
     const skip = (page - 1) * limit;
 
     const where: {
-      deletedAt: null;
+      isDeleted: boolean;
       author?: { contains: string; mode: 'insensitive' };
       publishedYear?: number;
     } = {
-      deletedAt: null, // Only get non-deleted books
+      isDeleted: false, // Only get non-deleted books
     };
 
     if (author) {
@@ -90,7 +93,7 @@ export class BookService {
     const book = await prisma.book.findFirst({
       where: {
         id: typeof id === 'string' ? parseInt(id, 10) : id,
-        deletedAt: null,
+        isDeleted: false,
       },
     });
 
@@ -109,7 +112,7 @@ export class BookService {
     const existingBook = await prisma.book.findFirst({
       where: {
         id: bookId,
-        deletedAt: null,
+        isDeleted: false,
       },
     });
 
@@ -117,10 +120,13 @@ export class BookService {
       throw new AppError(BOOK_ERRORS.NOT_FOUND.message, BOOK_ERRORS.NOT_FOUND.statusCode);
     }
 
-    // Check for duplicate ISBN if ISBN is being updated
+    // Check for duplicate ISBN if ISBN is being updated (only for non-deleted books)
     if (data.isbn && data.isbn !== existingBook.isbn) {
-      const duplicateBook = await prisma.book.findUnique({
-        where: { isbn: data.isbn },
+      const duplicateBook = await prisma.book.findFirst({
+        where: {
+          isbn: data.isbn,
+          isDeleted: false,
+        },
       });
 
       if (duplicateBook) {
@@ -168,7 +174,7 @@ export class BookService {
     const book = await prisma.book.findFirst({
       where: {
         id: bookId,
-        deletedAt: null,
+        isDeleted: false,
       },
     });
 
@@ -180,7 +186,7 @@ export class BookService {
     await prisma.book.update({
       where: { id: bookId },
       data: {
-        deletedAt: new Date(),
+        isDeleted: true,
       },
     });
   }
@@ -192,7 +198,7 @@ export class BookService {
     const searchTerm = searchQuery.trim();
 
     const where = {
-      deletedAt: null,
+      isDeleted: false,
       OR: [
         {
           title: {

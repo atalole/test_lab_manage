@@ -44,7 +44,7 @@ describe('E2E - Books API', () => {
             availabilityStatus: 'Available',
             createdAt: new Date(),
             updatedAt: new Date(),
-            deletedAt: null,
+            isDeleted: false,
           },
         ],
         pagination: { page: 1, limit: 10, total: 1, totalPages: 1 },
@@ -88,7 +88,7 @@ describe('E2E - Books API', () => {
         availabilityStatus: 'Available',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       (BookService.createBook as jest.Mock).mockResolvedValue(newBook);
@@ -157,7 +157,7 @@ describe('E2E - Books API', () => {
         availabilityStatus: 'Available',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       (BookService.getBookById as jest.Mock).mockResolvedValue(mockBook);
@@ -199,7 +199,7 @@ describe('E2E - Books API', () => {
         availabilityStatus: 'Available',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       (BookService.updateBook as jest.Mock).mockResolvedValue(updatedBook);
@@ -273,7 +273,7 @@ describe('E2E - Books API', () => {
             availabilityStatus: 'Available',
             createdAt: new Date(),
             updatedAt: new Date(),
-            deletedAt: null,
+            isDeleted: false,
           },
         ],
         pagination: { page: 1, limit: 10, total: 1, totalPages: 1 },

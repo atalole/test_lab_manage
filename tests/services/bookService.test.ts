@@ -43,7 +43,7 @@ describe('BookService', () => {
         availabilityStatus: 'Available',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       mockPrismaBook.findUnique.mockResolvedValue(null);
@@ -89,7 +89,7 @@ describe('BookService', () => {
           availabilityStatus: 'Available',
           createdAt: new Date(),
           updatedAt: new Date(),
-          deletedAt: null,
+          isDeleted: false,
         },
       ];
 
@@ -115,7 +115,7 @@ describe('BookService', () => {
         availabilityStatus: 'Available',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       mockPrismaBook.findFirst.mockResolvedValue(mockBook);
@@ -143,7 +143,7 @@ describe('BookService', () => {
         availabilityStatus: 'Available',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       const updatedBook = { ...existingBook, title: 'New Title' };
@@ -170,7 +170,7 @@ describe('BookService', () => {
         title: 'Test Book',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       const updatedBook = { ...existingBook, availabilityStatus: 'Available' };
@@ -196,20 +196,20 @@ describe('BookService', () => {
         availabilityStatus: 'Available',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       mockPrismaBook.findFirst.mockResolvedValue(existingBook);
       mockPrismaBook.update.mockResolvedValue({
         ...existingBook,
-        deletedAt: new Date(),
+        isDeleted: true,
       });
 
       await BookService.deleteBook(1);
 
       expect(mockPrismaBook.update).toHaveBeenCalledWith({
         where: { id: 1 },
-        data: { deletedAt: expect.any(Date) },
+        data: { isDeleted: true },
       });
     });
 
@@ -232,7 +232,7 @@ describe('BookService', () => {
           availabilityStatus: 'Available',
           createdAt: new Date(),
           updatedAt: new Date(),
-          deletedAt: null,
+          isDeleted: false,
         },
       ];
 

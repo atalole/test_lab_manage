@@ -42,7 +42,7 @@ describe('BookController', () => {
         availabilityStatus: 'Available',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       mockReq.body = {
@@ -105,7 +105,7 @@ describe('BookController', () => {
             availabilityStatus: 'Available',
             createdAt: new Date(),
             updatedAt: new Date(),
-            deletedAt: null,
+            isDeleted: false,
           },
         ],
         pagination: { page: 1, limit: 10, total: 1, totalPages: 1 },
@@ -186,7 +186,7 @@ describe('BookController', () => {
         availabilityStatus: 'Available',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       mockReq.params = { id: '1' };
@@ -236,7 +236,7 @@ describe('BookController', () => {
         availabilityStatus: 'Available',
         createdAt: new Date(),
         updatedAt: new Date(),
-        deletedAt: null,
+        isDeleted: false,
       };
 
       mockReq.params = { id: '1' };
@@ -329,7 +329,7 @@ describe('BookController', () => {
             availabilityStatus: 'Available',
             createdAt: new Date(),
             updatedAt: new Date(),
-            deletedAt: null,
+            isDeleted: false,
           },
         ],
         pagination: { page: 1, limit: 10, total: 1, totalPages: 1 },

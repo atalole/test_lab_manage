@@ -20,7 +20,7 @@ export interface BookUpdateInput {
 }
 
 export interface BookResponse extends Book {
-  deletedAt: Date | null;
+  isDeleted: boolean;
 }
 
 export interface BookWithWishlists extends Book {

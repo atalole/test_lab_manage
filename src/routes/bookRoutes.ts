@@ -53,7 +53,7 @@ const bookController = new BookController();
  *                 availabilityStatus: "Available"
  *                 createdAt: "2024-01-01T00:00:00.000Z"
  *                 updatedAt: "2024-01-01T00:00:00.000Z"
- *                 deletedAt: null
+ *                 isDeleted: false
  *       400:
  *         description: Validation error
  *         content:
@@ -132,7 +132,7 @@ router.post('/', validateCreateBook, bookController.createBook.bind(bookControll
  *                   availabilityStatus: "Available"
  *                   createdAt: "2024-01-01T00:00:00.000Z"
  *                   updatedAt: "2024-01-01T00:00:00.000Z"
- *                   deletedAt: null
+ *                   isDeleted: false
  *               pagination:
  *                 page: 1
  *                 limit: 10

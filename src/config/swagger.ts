@@ -88,11 +88,10 @@ const options: swaggerJsdoc.Options = {
               format: 'date-time',
               description: 'Timestamp when the book was last updated',
             },
-            deletedAt: {
-              type: 'string',
-              format: 'date-time',
-              nullable: true,
-              description: 'Timestamp when the book was soft deleted (null if not deleted)',
+            isDeleted: {
+              type: 'boolean',
+              description: 'Soft delete flag (true if deleted, false otherwise)',
+              example: false,
             },
           },
         },
