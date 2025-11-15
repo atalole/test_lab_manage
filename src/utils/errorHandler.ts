@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { validationResult, ValidationError } from 'express-validator';
+import { validationResult, } from 'express-validator';
 import logger from '../config/logger.js';
 
 // Validation error handler middleware
@@ -29,6 +29,7 @@ export const validationErrorHandler = (
 // Extended Error interface for Prisma errors
 interface PrismaError extends Error {
   code?: string;
+  status?: number;
   meta?: {
     target?: string[];
   };
@@ -45,9 +46,8 @@ export const errorHandler = (
   err: AppErrorInterface | PrismaError,
   req: Request,
   res: Response,
-  next: NextFunction
 ): void => {
-  const status = err.status || 500;
+  const status = err?.status || 500;
   const isOperational = 'isOperational' in err && err.isOperational;
 
   // Log error with appropriate level

@@ -186,7 +186,7 @@ export class BookService {
 
   // Search books by title or author
   static async searchBooks(params: SearchQueryParams): Promise<SearchBooksResult> {
-    const { query: searchQuery, page = 1, limit = 10 } = params;
+    const { q: searchQuery, page = 1, limit = 10 } = params;
     const skip = (page - 1) * limit;
     const searchTerm = searchQuery.trim();
 

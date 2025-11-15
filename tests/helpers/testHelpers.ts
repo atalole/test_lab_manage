@@ -1,4 +1,4 @@
-import prisma from '../../src/config/database.js';
+import prisma from '../../src/config/database';
 
 /**
  * Clean the database (useful for test isolation)
@@ -11,7 +11,7 @@ export async function cleanDatabase() {
 /**
  * Create a test book
  */
-export async function createTestBook(overrides = {}) {
+export async function createTestBook(overrides: any = {}) {
   return await prisma.book.create({
     data: {
       title: 'Test Book',
@@ -27,7 +27,7 @@ export async function createTestBook(overrides = {}) {
 /**
  * Create a test wishlist entry
  */
-export async function createTestWishlist(userId, bookId) {
+export async function createTestWishlist(userId: number, bookId: number) {
   return await prisma.wishlist.create({
     data: {
       userId,
@@ -42,4 +42,3 @@ export async function createTestWishlist(userId, bookId) {
 export function generateUniqueISBN() {
   return `978${Math.floor(Math.random() * 1000000000)}`;
 }
-

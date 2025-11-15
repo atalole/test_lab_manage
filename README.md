@@ -296,6 +296,18 @@ This opens a GUI to view and edit your database.
 
 ### TypeScript
 
+### Testing
+
+Run the test suite:
+```bash
+npm test                # Run all tests
+npm run test:watch     # Watch mode
+npm run test:coverage  # With coverage report
+```
+
+For detailed testing guide, see [TESTING.md](./TESTING.md).
+
+
 ```bash
 # Build TypeScript to JavaScript
 npm run build

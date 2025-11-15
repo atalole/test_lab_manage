@@ -43,7 +43,6 @@ export const requestLogger = (
 export const errorLogger = (
   err: Error,
   req: Request,
-  res: Response,
   next: NextFunction
 ): void => {
   logger.error('Request error', {

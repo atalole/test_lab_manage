@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { BookService } from '../services/bookService.js';
-import { AppError } from '../utils/errorHandler.js';
 import { BookQueryParams, SearchQueryParams } from '../types/index.js';
 
 export class BookController {
@@ -86,9 +85,9 @@ export class BookController {
   // Search books
   static async searchBooks(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const { q: query, page, limit } = req.query;
+      const { q: query, page, limit } :any = req.query;
       const params: SearchQueryParams = {
-        query: query as string,
+        q: query as string,
         page: page ? parseInt(page as string, 10) : 1,
         limit: limit ? parseInt(limit as string, 10) : 10,
       };
