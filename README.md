@@ -244,6 +244,7 @@ GET /health
 - `createdAt`: Timestamp (DateTime)
 - `updatedAt`: Timestamp (DateTime, auto-updated)
 - `deletedAt`: Soft delete timestamp (DateTime, nullable)
+- `isDeleted`: Soft delete boolean (default fasle)
 
 **Indexes**: `author`, `publishedYear`, `availabilityStatus`, `deletedAt`
 
