@@ -1,8 +1,8 @@
 import { Book } from '@prisma/client';
-import prisma from '../config/database.ts';
-import { AppError } from '../utils/errorHandler.ts';
-import { BOOK_ERRORS } from '../utils/errors.ts';
-import { notificationQueue } from '../config/queue.ts';
+import prisma from '../config/database.js';
+import { AppError } from '../utils/errorHandler.js';
+import { BOOK_ERRORS } from '../utils/errors.js';
+import { notificationQueue } from '../config/queue.js';
 import {
   BookCreateInput,
   BookUpdateInput,
@@ -11,7 +11,7 @@ import {
   GetBooksResult,
   SearchBooksResult,
   AvailabilityStatus,
-} from '../types/index.ts';
+} from '../types/index.js';
 
 export class BookService {
   // Create a new book

@@ -1,6 +1,6 @@
-import { processWishlistNotifications } from '../../src/services/notificationService.ts';
-import prisma from '../../src/config/database.ts';
-import logger from '../../src/config/logger.ts';
+import { processWishlistNotifications } from '../../src/services/notificationService.js';
+import prisma from '../../src/config/database.js';
+import logger from '../../src/config/logger.js';
 
 // Mock prisma and logger modules
 jest.mock('../../src/config/database', () => ({

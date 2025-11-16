@@ -1,1 +1,1 @@
-export { errorHandler } from '../utils/errorHandler.ts';
+export { errorHandler } from '../utils/errorHandler.js';

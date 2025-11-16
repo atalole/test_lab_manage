@@ -1,7 +1,7 @@
 import Bull, { Job } from 'bull';
-import { processWishlistNotifications } from '../services/notificationService.ts';
-import { NotificationJobData } from '../types/index.ts';
-import logger from './logger.ts';
+import { processWishlistNotifications } from '../services/notificationService.js';
+import { NotificationJobData } from '../types/index.js';
+import logger from './logger.js';
 
 // Create notification queue
 export const notificationQueue = new Bull<NotificationJobData>('wishlist-notifications', {

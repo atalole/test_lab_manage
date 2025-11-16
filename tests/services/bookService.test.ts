@@ -3,8 +3,8 @@
  */
 
 // Mock dependencies before importing
-jest.mock('../../src/config/logger.ts');
-jest.mock('../../src/config/queue.ts');
+jest.mock('../../src/config/logger.js');
+jest.mock('../../src/config/queue.js');
 
 // Mock prisma
 const mockPrismaBook = {
@@ -16,16 +16,16 @@ const mockPrismaBook = {
   update: jest.fn(),
 };
 
-jest.mock('../../src/config/database.ts', () => ({
+jest.mock('../../src/config/database.js', () => ({
   __esModule: true,
   default: {
     book: mockPrismaBook,
   },
 }));
 
-import { BookService } from '../../src/services/bookService.ts';
-import { AppError } from '../../src/utils/errorHandler.ts';
-import { notificationQueue } from '../../src/config/queue.ts';
+import { BookService } from '../../src/services/bookService.js';
+import { AppError } from '../../src/utils/errorHandler.js';
+import { notificationQueue } from '../../src/config/queue.js';
 
 describe('BookService', () => {
   beforeEach(() => {

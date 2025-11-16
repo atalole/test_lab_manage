@@ -17,9 +17,7 @@
     "noUnusedParameters": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
-    "noEmit": true,
     "allowSyntheticDefaultImports": true,
-    "allowImportingTsExtensions": true,
     "types": ["node", "jest"]
   },
   "include": ["src/**/*"],

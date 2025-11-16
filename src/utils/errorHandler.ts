@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import logger from '../config/logger.ts';
-import { PRISMA_ERRORS, GENERAL_ERRORS } from './errors.ts';
+import logger from '../config/logger.js';
+import { PRISMA_ERRORS, GENERAL_ERRORS } from './errors.js';
 
 // Validation error handler middleware
 export const validationErrorHandler = (req: Request, res: Response, next: NextFunction): void => {

@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { BookService } from '../services/bookService.ts';
+import { BookService } from '../services/bookService.js';
 
-import { BookQueryParams, SearchQueryParams } from '../types/index.ts';
-import { BOOK_MESSAGES } from '../utils/messages.ts';
+import { BookQueryParams, SearchQueryParams } from '../types/index.js';
+import { BOOK_MESSAGES } from '../utils/messages.js';
 
 export class BookController {
   private messages;

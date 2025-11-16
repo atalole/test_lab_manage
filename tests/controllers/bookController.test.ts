@@ -1,12 +1,12 @@
-import { BookController } from '../../src/controllers/bookController.ts';
-import { BookService } from '../../src/services/bookService.ts';
-import { AppError } from '../../src/utils/errorHandler.ts';
-import { BOOK_MESSAGES } from '../../src/utils/messages.ts';
+import { BookController } from '../../src/controllers/bookController.js';
+import { BookService } from '../../src/services/bookService.js';
+import { AppError } from '../../src/utils/errorHandler.js';
+import { BOOK_MESSAGES } from '../../src/utils/messages.js';
 import { Request, Response, NextFunction } from 'express';
 
 // Mock dependencies
-jest.mock('../../src/services/bookService.ts');
-jest.mock('../../src/config/logger.ts');
+jest.mock('../../src/services/bookService.js');
+jest.mock('../../src/config/logger.js');
 
 const bookController = new BookController();
 

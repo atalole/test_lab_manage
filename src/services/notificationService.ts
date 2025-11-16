@@ -1,7 +1,7 @@
-import prisma from '../config/database.ts';
-import { NotificationResult } from '../types/index.ts';
-import logger from '../config/logger.ts';
-import { NOTIFICATION_MESSAGES } from '../utils/notificationMessages.ts';
+import prisma from '../config/database.js';
+import { NotificationResult } from '../types/index.js';
+import logger from '../config/logger.js';
+import { NOTIFICATION_MESSAGES } from '../utils/notificationMessages.js';
 
 /**
  * Process wishlist notifications for a book that became available

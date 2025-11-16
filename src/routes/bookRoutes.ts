@@ -1,11 +1,11 @@
 import express, { Router } from 'express';
-import { BookController } from '../controllers/bookController.ts';
+import { BookController } from '../controllers/bookController.js';
 import {
   validateCreateBook,
   validateUpdateBook,
   validateQueryParams,
   validateSearch,
-} from '../middleware/validation.ts';
+} from '../middleware/validation.js';
 
 const router: Router = express.Router();
 

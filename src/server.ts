@@ -4,15 +4,17 @@ import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
-import swaggerSpec from './config/swagger.ts';
-import bookRoutes from './routes/bookRoutes.ts';
-import { errorHandler } from './middleware/errorHandler.ts';
-import { requestLogger } from './middleware/logger.ts';
-import { notificationQueue } from './config/queue.ts';
-import logger from './config/logger.ts';
+import swaggerSpec from './config/swagger.js';
+import bookRoutes from './routes/bookRoutes.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { requestLogger } from './middleware/logger.js';
+import { notificationQueue } from './config/queue.js';
+import logger from './config/logger.js';
 
 // Load environment variables
 dotenv.config();
+
+console.log('env', process.env);
 
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
