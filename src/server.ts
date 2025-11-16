@@ -14,8 +14,6 @@ import logger from './config/logger.js';
 // Load environment variables
 dotenv.config();
 
-console.log('env', process.env);
-
 const app: Express = express();
 const PORT: number = parseInt(process.env.PORT || '3000', 10);
 
